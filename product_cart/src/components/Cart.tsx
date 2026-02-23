@@ -14,6 +14,7 @@ const Cart = ()=>{
                         <p>{c.name}</p>
                         <p>{c.price}</p>
                         <p>{c.category}</p>
+                        <p>Quantity : {c.quantity}</p>
                     </div>
                 ))
             )
