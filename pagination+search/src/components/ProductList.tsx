@@ -25,8 +25,13 @@ const ProductList = () => {
 
       {/* Pagination */}
       <div className="flex gap-2 justify-center mt-4">
+        <button 
+        className={`px-3 py-1 border ${currentPage === 1 ? "border-amber-50 bg-amber-950" : ""} `}
+        disabled={currentPage == 1}  
+        onClick={()=> setCurrentPage((prev)=>prev-1)} >prev</button>
+
         {Array.from({ length: totalPages }, (_, index) => (
-          <button
+        <button
             key={index}
             onClick={() => setCurrentPage(index + 1)}
             className={`px-3 py-1 border ${
@@ -36,6 +41,12 @@ const ProductList = () => {
             {index + 1}
           </button>
         ))}
+        <button 
+        className={`px-3 py-1 border ${currentPage === totalPages ? "border-amber-50 bg-amber-950" : ""} `}
+         disabled={currentPage == totalPages}
+           onClick={()=> setCurrentPage((prev)=>prev+1)} >
+                next
+            </button>
       </div>
     </div>
   );
