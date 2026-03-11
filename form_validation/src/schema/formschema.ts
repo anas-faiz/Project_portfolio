@@ -33,5 +33,11 @@ export const formSchema = [
     type: "number",
     required: true,
     min: 18
+  },{
+    name: "Degree",
+    label: "Degree",
+    type: "select",
+    required: true,
+    options: ["Delhi", "Mumbai", "Bangalore"]
   }
 ];

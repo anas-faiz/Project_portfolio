@@ -1,9 +1,13 @@
+import Field from "./component/Field";
+import { formSchema } from "./schema/formschema";
 
 
 export default function App(){
   return(
     <div>
-      hello
+      {
+        formSchema.map(field => <Field key={field.name} {...field} />)
+      }
     </div>
   )
 }
