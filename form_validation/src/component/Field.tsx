@@ -1,4 +1,7 @@
-export default function Field({ label, type, name, options = [], value, onChange }) {
+import type { FieldProps } from "../utils/types"
+
+
+export default function Field({ label, type, name, options = [], value, onChange } : FieldProps) {
 
   if (type === "radio") {
     return (
