@@ -1,6 +1,8 @@
 import { WebSocketServer, WebSocket } from "ws";
 
-const wss = new WebSocketServer({ port: 8080 });
+const wss = new WebSocketServer({ port: 3030 });
+
+console.log("server started at")
 
 interface User {
   socket: WebSocket;
@@ -10,6 +12,7 @@ interface User {
 const allSockets: User[] = [];
 
 wss.on("connection", (socket) => {
+    console.log("user connected")
   socket.on("message", (message) => {
     const parsedMessage = JSON.parse(message.toString());
 
@@ -18,6 +21,7 @@ wss.on("connection", (socket) => {
         socket,
         room: parsedMessage.payload.roomId,
       });
+      console.log("user joind room", parsedMessage.payload.roomId)
     }
 
     if (parsedMessage.type === "chat") {
