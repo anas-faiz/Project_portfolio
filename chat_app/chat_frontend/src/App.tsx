@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const App = () => {
   const [messages, setMessages] = useState([
@@ -6,15 +6,43 @@ const App = () => {
     { text: "Hello bro!", sender: "me" },
     { text: "Working on WebSockets?", sender: "other" },
   ]);
+  const wsRef = useRef(null);
 
   const [input, setInput] = useState("");
 
   const sendMessage = () => {
     if (!input.trim()) return;
+      wsRef.current?.send(JSON.stringify({
+        type: "chat",
+        payload:{
+          message : input
+        }
+      }))
 
-    setMessages([...messages, { text: input, sender: "me" }]);
+      setMessages([...messages, { text: input, sender: "me" }])
+    
     setInput("");
   };
+
+  useEffect(()=>{
+    const ws = new WebSocket("ws://localhost:3030");
+    wsRef.current = ws;
+    ws.onopen=()=>{
+        ws.send(JSON.stringify({
+          type: "join",
+          payload:{
+            roomId:"red"
+          }
+        }))
+    }
+
+    ws.onmessage=(event)=>{
+      setMessages((prev)=> [...prev,{text:event.data, sender:"other"}])
+    }
+
+    return () => ws.close();
+
+},[])
 
   return (
     <div className="h-screen bg-black text-white flex flex-col">
