@@ -6,47 +6,54 @@ const App = () => {
     { text: "Hello bro!", sender: "me" },
     { text: "Working on WebSockets?", sender: "other" },
   ]);
-  const wsRef = useRef(null);
+  const wsRef = useRef();
 
   const [input, setInput] = useState("");
 
+  useEffect(() => {
+    const ws = new WebSocket("ws://localhost:3030");
+    wsRef.current = ws;
+    ws.onopen = () => {
+      ws.send(
+        JSON.stringify({
+          type: "join",
+          payload: {
+            roomId: "room1",
+          },
+        }),
+      );
+    };
+
+    ws.onmessage = (event) => {
+      setMessages((prev) => [...prev, { text: event.data, sender: "other" }]);
+    };
+
+    ws.onclose = () => {
+      console.log("Disconnected");
+    };
+
+    return () => ws.close();
+  }, []);
+
   const sendMessage = () => {
     if (!input.trim()) return;
-      wsRef.current?.send(JSON.stringify({
-        type: "chat",
-        payload:{
-          message : input
-        }
-      }))
+    if (wsRef.current?.readyState === WebSocket.OPEN) {
+      wsRef.current.send(
+        JSON.stringify({
+          type: "chat",
+          payload: {
+            message: input,
+          },
+        }),
+      );
+    }
+    setMessages([...messages, { text: input, sender: "me" }]);
 
-      setMessages([...messages, { text: input, sender: "me" }])
-    
     setInput("");
   };
 
-  useEffect(()=>{
-    const ws = new WebSocket("ws://localhost:3030");
-    wsRef.current = ws;
-    ws.onopen=()=>{
-        ws.send(JSON.stringify({
-          type: "join",
-          payload:{
-            roomId:"red"
-          }
-        }))
-    }
-
-    ws.onmessage=(event)=>{
-      setMessages((prev)=> [...prev,{text:event.data, sender:"other"}])
-    }
-
-    return () => ws.close();
-
-},[])
-
   return (
     <div className="h-screen bg-black text-white flex flex-col">
-      
       {/* Header */}
       <div className="p-4 border-b border-gray-800 flex items-center justify-between">
         <h1 className="text-lg font-semibold">Chat Room</h1>

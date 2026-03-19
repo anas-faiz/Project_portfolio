@@ -32,7 +32,7 @@ wss.on("connection", (socket) => {
       if (!currentUser) return;
 
       allSockets.forEach((user) => {
-        if (user.room === currentUser.room) {
+        if (user.room === currentUser.room && user.socket !== socket) {
           user.socket.send(parsedMessage.payload.message);
         }
       });
